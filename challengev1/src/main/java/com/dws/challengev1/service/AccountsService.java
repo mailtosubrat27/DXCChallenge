@@ -17,10 +17,14 @@ public class AccountsService {
 
   @Getter
   private final AccountsRepository accountsRepository;
-
+  
+  private final EmailNotificationService emailNotificationService;
+  
   @Autowired
-  public AccountsService(AccountsRepository accountsRepository) {
+  public AccountsService(AccountsRepository accountsRepository,
+		  EmailNotificationService emailNotificationService) {
     this.accountsRepository = accountsRepository;
+    this.emailNotificationService = emailNotificationService;
   }
 
   public void createAccount(Account account) {
@@ -63,8 +67,8 @@ public class AccountsService {
 			}
 		}
 		// Send notificatoin
-//		 notificationService.notify(accountFromId, "Transferred " + amount + " to account " + accountToId);
-//	     notificationService.notify(accountToId, "Received " + amount + " from account " + accountFromId);
+		emailNotificationService.notifyAboutTransfer(fromAcc, "Transferred " + amount + " to account " + accountToId);
+		emailNotificationService.notifyAboutTransfer(toAcc, "Received " + amount + " from account " + accountFromId);
 
 		log.info("Balance transfer successfully");
 	}
